@@ -1,9 +1,18 @@
-import './App.css';
+import "./App.css";
+import About from "./components/About";
+import Events from "./components/Events";
+import Execs from "./components/Execs";
+import Hero from "./components/Hero";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <>
-      <h1 className="text-green-500 text-2xl">Hello World</h1>
+      <Navbar />
+      <Hero />
+      <About />
+      <Execs />
+      <Events />
     </>
   );
 }
