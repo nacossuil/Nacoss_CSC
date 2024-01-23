@@ -11,14 +11,23 @@ const Events = () => {
     {
       id: 0,
       img: chip,
+      eventName: "National Innovation summit",
+      description:
+        "Is to become a network of committed Student IT Professionals",
     },
     {
       id: 1,
       img: virtual,
+      eventName: "National Innovation summit",
+      description:
+        "Is to become a network of committed Student IT Professionals",
     },
     {
       id: 2,
       img: ar,
+      eventName: "National Innovation summit",
+      description:
+        "Is to become a network of committed Student IT Professionals",
     },
   ];
 
@@ -39,8 +48,37 @@ const Events = () => {
         <div className="flex flex-wrap justify-between items-center py-16">
           {eventInfo.map((info) => {
             return (
-              <div className="flex" key={info.id}>
-                <img src={info.img} alt="" className="w-[250px]" />
+              <div
+                className="flex flex-col w-[300px] mx-6 shadow-lg bg-white rounded-md"
+                key={info.id}
+              >
+                <img src={info.img} alt="" className="w-full" />
+                <div className="px-4 py-6">
+                  <p className="font-semibold my-2">{info.eventName}</p>
+                  <p className="text-[12px]">{info.description}</p>
+                </div>
+                <div className="flex justify-between px-4 py-4">
+                  <div>
+                    <span className="flex">
+                      <img src={cal} className="w-[12px] h-[12px]" />
+                      <p className="text-[10px] ml-2 m">
+                        12 Sep, 2023 - 28 Sep, 2023
+                      </p>
+                    </span>
+                    <span className="flex mt-2">
+                      <img src={time} className="w-[12px] h-[12px]" />
+                      <p className="text-[10px] ml-2">12 PM - 2:30 PM</p>
+                    </span>
+                    <span className="flex mt-2">
+                      <img src={location} className="w-[12px] h-[12px]" />
+                      <p className="text-[10px] ml-2">CISLT</p>
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[12px] text-right">NGN2,500</p>
+                    <button className="bg-[#D8A331] text-[#fff] text-[12px] py-2 px-4 rounded-[30px] mt-2">Buy tickets</button>
+                  </div>
+                </div>
               </div>
             );
           })}
