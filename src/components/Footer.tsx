@@ -1,5 +1,3 @@
-import React from "react";
-
 import insta from "../assets/f_insta.png";
 import fb from "../assets/f_facebook.png";
 import twitter from "../assets/f_twitter.png";
@@ -29,7 +27,7 @@ const Footer = () => {
         </div>
       </div>
       <p className="text-center text-[12px] text-[#fff]">
-        © 2023 Chumskiisama. All rights reserved.
+        © 2023 Developed by Maverick. All rights reserved.
       </p>
     </div>
   );

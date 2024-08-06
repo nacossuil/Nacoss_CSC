@@ -1,4 +1,3 @@
-import React from "react";
 import img1 from "../assets/img1.jpg";
 import img2 from "../assets/img2.jpg";
 import img3 from "../assets/img3.jpg";
@@ -65,19 +64,19 @@ const Execs = () => {
   ];
 
   return (
-    <div className="">
-      <p className="text-center leading-[48px] font-bold text-[3rem] mb-8">Meet our Executives</p>
+    <div className="" id="executives">
+      <p className="text-center leading-[48px] font-bold text-[3rem] mb-8 hero-text">Meet our Executives</p>
       <div className="flex flex-wrap justify-center items-center">
         {execInfo.map((info) => {
           return (
             <div className="w-[270px] flex flex-col justify-center items-center my-8">
-              <img src={info.img} alt="" className="rounded-[50%] h-[15rem]" />
-              <p className="leading-[4rem]">{info.name}</p>
-              <p className="leading-[1rem]">{info.title}</p>
+              <img src={info.img} alt="" className="rounded-[50%] h-[12.5rem] w-[12.5rem] object-fill" />
+              <p className="leading-[4rem] text-[16px]">{info.name}</p>
+              <p className="leading-[1rem] text-[13px]">{info.title}</p>
               <div className="flex justify-between my-6">
-                <img src={etwitter} className="mx-4" />
-                <img src={egmail} className="mx-4" />
-                <img src={elinked} className="mx-4" />
+                <img src={etwitter} className="mx-4 h-[16px] w-[16px]" />
+                <img src={egmail} className="mx-4 h-[16px] w-[16px]" />
+                <img src={elinked} className="mx-4 h-[16px] w-[16px]" />
               </div>
             </div>
           );

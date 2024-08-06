@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 
 const Enquiry = () => {
   const [formData, setFormData] = useState({
@@ -23,11 +23,11 @@ const Enquiry = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center px-52 mb-28">
-      <p className="text-center text-[2rem] font-bold">
+    <div className="flex flex-col justify-center items-center px-52 mb-28" id="contact">
+      <p className="text-center text-[1.5rem] text-[#111111] font-bold t-4">
         If you have any question or need assistance,
       </p>
-      <p className="text-center text-[2rem] font-bold">
+      <p className="text-center text-[1.5rem] text-[#111111] font-bold t-4">
         please do not hesitate to reach out to us
       </p>
       <form onSubmit={handleSubmit} className="max-w-md w-[400px] mx-auto mt-8">
