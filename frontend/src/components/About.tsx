@@ -16,19 +16,23 @@ const About = () => {
             Most Organised Student Body in Unilorin
           </p>
           <p className="text-[15px] leading-[28px] mt-6 sub-text">
-            Nigeria Association of Computing Students (NACOS) is the umbrella
-            body for students studying Computer Science, Computer Engineering,
-            Information Systems, Cyber Security, Software Engineering,
-            Telecommunications Engineering, and all IT-related courses in
-            Nigeria and have been in existence for over two decades.
+            The Nigeria Association of Computer Science Students Unilorin (NACOSS) is the
+            body for students studying Computer Science. Our mission is to foster a community
+            of innovators, provide resources for academic excellence, and empower students
+            to reach their full potential.
+          </p>
+          <p className="text-[15px] leading-[28px] mt-6 sub-text">
+            We organize regular events, workshops, and seminars to enhance our members'
+            skills and knowledge. Our executive team is dedicated to serving the interests
+            of our members and ensuring a memorable university experience.
           </p>
           <img src={infinity} alt="" className="w-[2rem] h-[1rem] relative top-6"/>
         </div>
         <div>
-          <img src={about} />
+          <img src={about}/>
         </div>
       </div>
-      <img src={direction} alt="" className="relative left-[56rem] bottom-4 w-[2rem] h-[1rem]" />
+      <img src={direction} alt="" className="relative left-[56rem] bottom-4 w-[2rem] h-[1rem]"/>
     </div>
   );
 };
