@@ -3,27 +3,63 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import Execs from './ExecsSchema.mjs';
 import Events from './EventSchema.mjs';
+import cloudinary from 'cloudinary';
+import {CloudinaryStorage} from 'multer-storage-cloudinary';
 import multer from 'multer';
-import {newEventValidator, execsValidator} from "./validators.mjs";
+import {newEventValidator, execsValidator, sessionvalidator} from "./validators.mjs";
+import {validationResult} from 'express-validator';
+import cors from 'cors';
 
-const {validationResult} = await import('express-validator');
-
-/* global process */
-const app = express();
-let mongoDBUrI = "mongodb+srv://username:password@cluster0.djovt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-const portNumber = process.env.PORT;
-const username = process.env.USERNAME;
-let password = process.env.PASSWORD;
-password = encodeURIComponent(password);
 dotenv.config();
-mongoDBUrI = mongoDBUrI.replace("username", username).replace("password", password);
+const app = express();
+const mongoDBUrI = process.env.mongoDBUrI;
+const portNumber = process.env.PORT;
 
-//middleware
-app.use(express.json()); // for parsing JSON bodies
-app.use(express.urlencoded({extended: true})); // for parsing URL-encoded bodies
 
-// multer for handling file uploads
-const upload = multer();
+//cors
+const allowedOrigins = [
+    'http://localhost:5173',  //
+    'https://app-name.netlify.app'  //To be replaced with the actual Netlify domain when deployed.
+];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+// Configure Cloudinary
+cloudinary.v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary.v2, params: {
+        folder: 'execs',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+        format: "auto",
+        transformation: [{width: 1000, height: 1000, crop: 'limit'}, {fetch_format: 'auto', quality: 'auto'}]
+    }
+});
+
+// Configure multer with Cloudinary storage
+const upload = multer({storage: storage});
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(cors(corsOptions));
 
 // Connect to MongoDB
 mongoose.connect(`${mongoDBUrI}`).then(() => {
@@ -35,175 +71,96 @@ mongoose.connect(`${mongoDBUrI}`).then(() => {
 // Routes
 app.get('/api/events', async (req, res) => {
     try {
-        const {page = 1, limit = 10, startDate, endDate} = req.query;
-
-        let dbQuery = {};
-        if (startDate && endDate) {
-            dbQuery.startDate = {$gte: new Date(startDate)};
-            dbQuery.endDate = {$lte: new Date(endDate)};
-        }
-
         const events = await Events
-            .find(dbQuery)
-            .skip((page - 1) * limit)
-            .lean() // For better performance when you don't need Mongoose documents
-            .exec();
-
-        const count = await Events.countDocuments(dbQuery);
-
-        res.json({
-            events,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
-        });
-
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
-app.post('/api/events', newEventValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({errors: errors.array()});
-    }
-
-    const event = new Events({
-        title: req.body.title,
-        description: req.body.description,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
-        price: req.body.price,
-        location: req.body.location,
-        imageUrl: req.body.imageUrl
-    });
-    try {
-        const newEvent = await event.save();
-        res.status(201).json(newEvent);
-    } catch (error) {
-        res.status(400).json({message: error.message});
-    }
-});
-
-app.get('/api/execs', async (req, res) => {
-    try {
-        const {email, page = 1, limit = 10} = req.query;
-
-        let query = {};
-        if (email) {
-            query.email = email;
-        }
-
-        const execs = await Execs.find(query)
-            .limit(limit)
-            .skip((page - 1) * limit)
-            .select('name email position studentId session') // Only select needed fields
+            .find()
+            .select("-_id -__v")
             .lean()
             .exec();
+        res.status(200).json(events);
 
-        const count = await Execs.countDocuments(query);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
 
-        res.json({
-            execs,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
+app.post('/api/events', upload.single('image'), newEventValidator, async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({errors: errors.array()});
+        }
+
+        const {title, description, startDateAndTime, endDateAndTime, price, venue} = req.body;
+
+        const eventData = {
+            title,
+            description,
+            startDateAndTime,
+            endDateAndTime,
+            price,
+            venue
+        };
+
+        if (!req.file)
+            res.status(400).json("An image file has to be attached.");
+        eventData.image = req.file.path; // This should be the Cloudinary URL
+        const event = new Events(eventData);
+        const newEvent = await event.save();
+
+        res.status(201).json(newEvent);
+    } catch (error) {
+        console.error('Error creating event:', error);
+        res.status(500).json({message: 'Internal server error', error: error.message});
+    }
+});
+
+app.get('/api/execs', sessionvalidator, async (req, res) => {
+    try {
+        const {session} = req.body;
+
+        if (!session) return res.status(400).json({message: "Session is required in the request body"});
+        const execs = await Execs
+            .findBySession(session)
+
+        res.status(200).json({
+            execs, totalExecs: execs.length
         });
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 });
 
-// POST route for execs
+//
 app.post('/api/execs', upload.single('image'), execsValidator, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    const exec = new Execs({
-        name: req.body.name,
-        email: req.body.email,
-        position: req.body.position,
-        studentId: req.body.studentId,
-        session: req.body.session,
-        image: {
-            data: req.file.buffer,
-            contentType: req.file.mimetype
-        }
-    });
-
     try {
-        const newExec = await exec.save();
-        res.status(201).json({
-            ...newExec.toObject(),
-            image: {
-                contentType: newExec.image.contentType,
-                size: newExec.image.data.length
-            }
+        let imageUrl;
+        if (req.file) imageUrl = req.file.path;
+
+        const exec = new Execs({
+            name: req.body.name,
+            email: req.body.email,
+            position: req.body.position,
+            studentId: req.body.studentId,
+            session: req.body.session,
+            imageUrl: imageUrl, // thumbnailUrl: thumbnailUrl // If you want to save the thumbnail URL
         });
+
+        const newExec = await exec.save();
+        res.status(201).json(newExec);
     } catch (error) {
         res.status(400).json({message: error.message});
     }
 });
 
-app.get('/api/events/:id', async (req, res) => {
-    try {
-        const event = await Events.findById(req.params.id);
-        if (!event) {
-            return res.status(404).json({message: "Event not found"});
-        }
-        res.json(event);
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
-app.put('/api/events/:id', newEventValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({errors: errors.array()});
-    }
-
-    try {
-        const updatedEvent = await Events.findByIdAndUpdate(req.params.id, req.body, {new: true});
-        if (!updatedEvent) {
-            return res.status(404).json({message: "Event not found"});
-        }
-        res.json(updatedEvent);
-    } catch (error) {
-        res.status(400).json({message: error.message});
-    }
-});
-
-app.delete('/api/events/:id', async (req, res) => {
-    try {
-        const deletedEvent = await Events.findByIdAndDelete(req.params.id);
-        if (!deletedEvent) {
-            return res.status(404).json({message: "Event not found"});
-        }
-        res.json({message: "Event deleted successfully"});
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
-// New route to get exec image
-app.get('/api/execs/:id/image', async (req, res) => {
-    try {
-        const exec = await Execs.findById(req.params.id);
-        if (!exec || !exec.image) {
-            return res.status(404).json({message: "Image not found"});
-        }
-        res.set('Content-Type', exec.image.contentType);
-        res.send(exec.image.data);
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({message: "Something went wrong!"});
+// Error handling middleware
+app.use((err, req, res) => {
+    console.error(err);
+    res.status(500).json({message: "Internal Server Error: Something went wrong!"});
 });
 
 app.listen(portNumber, () => {
