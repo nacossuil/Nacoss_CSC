@@ -22,7 +22,7 @@ const Hero = () => {
             <img src={direction} className='relative left-[26rem] bottom-24' />
             <p className='text-center relative bottom-16 sub-text'>We are dedicated to providing high-quality education, research, and innovation in the field of computer science. Our goal is to empower students with the knowledge, skills, and expertise needed to succeed in the ever-evolving tech industry.
             </p>
-            <button className='bg-[#D8A331] text-[#fff] mt-6 rounded-[30px] px-12 h-[2.5rem] relative bottom-12'>Learn more</button>
+            <button className='bg-[#D8A331] hover:bg-[#29176B] text-[#fff] mt-6 rounded-[30px] px-12 h-[2.5rem] relative bottom-12'>Learn more</button>
             <img src={infinity} alt="" className='relative right-[28rem] h-[3rem] w-[5rem] relative bottom-12' />
         </div>
     </div>

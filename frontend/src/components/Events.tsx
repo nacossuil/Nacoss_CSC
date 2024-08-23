@@ -75,7 +75,7 @@ const Events = () => {
                   </div>
                   <div>
                     <p className="font-bold text-[12px] sub-text text-right">NGN2,500</p>
-                    <button className="bg-[#D8A331] text-[#fff] text-[12px] py-2 px-4 rounded-[30px] mt-2">Buy tickets</button>
+                    <button className="bg-[#D8A331] hover:bg-[#29176B] text-[#fff] text-[12px] py-2 px-4 rounded-[30px] mt-2">Buy tickets</button>
                   </div>
                 </div>
               </div>

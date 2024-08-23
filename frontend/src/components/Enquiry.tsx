@@ -85,7 +85,7 @@ const Enquiry = () => {
 
         <button
           type="submit"
-          className="bg-[#D8A331] text-white px-4 py-2 rounded-[30px] w-full mt-4"
+          className="bg-[#D8A331] hover:bg-[#29176B] text-white px-4 py-2 rounded-[30px] w-full mt-4"
         >
           Send Message
         </button>
