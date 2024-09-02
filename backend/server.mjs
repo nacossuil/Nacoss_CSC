@@ -116,9 +116,9 @@ app.post('/api/events', upload.single('image'), newEventValidator, async (req, r
 
 app.get('/api/execs', sessionvalidator, async (req, res) => {
     try {
-        const {session} = req.body;
+        const {session} = req.query;
 
-        if (!session) return res.status(400).json({message: "Session is required in the request body"});
+        if (!session) return res.status(400).json({message: "A session object is required in the request query. "});
         const execs = await Execs
             .findBySession(session)
 
