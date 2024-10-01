@@ -1,79 +1,121 @@
-
-import  { useState } from 'react';
-import hamburger from "../assets/hamburger.png"
-import cscLogo from "../assets/nacos_csc_logo.png"
+import { useState } from 'react';
+import hamburger from "../assets/hamburger.png";
+import cscLogo from "../assets/nacoss_csc_logo.png";
+import unilorinLogo from "../assets/unilorin-logo.svg";
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
 
-  return (
-    <nav className="bg-[#fff] p-4 border-[#111111] shadow-bottom-only sticky w-full top-[0] z-[1000]">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Logo */}
-        <div className="">
-          <img src={cscLogo} className='h-[120px] w-[120px]'/>
-        </div>
+    const closeMenu = () => {
+        setIsMenuOpen(false);
+    };
 
-        {/* Nav List */}
-        <ul
-          className={`lg:flex text-variant-one ${
-            isMenuOpen ? 'flex flex-col justify-center items-center w-full' : 'hidden'
-          } lg:flex-row space-x-4`}
-        >
-          <li>
-            <a href="#home" className="text-[#11111199] hover:text-[#1D4E8D]">
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="#about" className="text-[#11111199] hover:text-[#1D4E8D]">
-              About
-            </a>
-          </li>
-          <li>
-            <a href="#executives" className="text-[#11111199] hover:text-[#1D4E8D]">
-              Executives
-            </a>
-          </li>
-          <li>
-            <a href="#events" className="text-[#11111199] hover:text-[#1D4E8D]">
-              Events
-            </a>
-          </li>
-          <li>
-            <a href="https://drive.google.com/drive/folders/1QR9yBIMWBbQ0-lR60NhivgKJUYnjCAD1?usp=drive_link" className="text-[#11111199] hover:text-[#1D4E8D]">
-              Study Resources
-            </a>
-          </li>
-          <li>
-            <a href="https://drive.google.com/drive/folders/11teLR7hqzVXJN_Zgn9Ic5tS8GQmwvjmY?usp=drive_link" className="text-[#11111199] hover:text-[#1D4E8D]">
-              Repositories
-            </a>
-          </li>
-          <li>
-            <a href="#contact" className="text-[#11111199] hover:text-[#1D4E8D]">
-              Contact
-            </a>
-          </li>
-        </ul>
+    // Reusable class string for navigation links
+    const navLinkClasses = "py-2 px-4 rounded-md text-gray-700 hover:bg-blue-700 hover:text-white transition duration-300";
 
-       
-        <div className="lg:hidden">
-          <button
-            onClick={toggleMenu}
-            className=""
-          >
-            <img src={hamburger} />
-          </button>
-        </div>
+    return (
+        <nav id="navbar" className="bg-white p-4 border-b border-gray-200 shadow sticky top-0 z-50">
+            <div className="container mx-auto flex justify-between items-center">
+                {/* Logo Container */}
+                <div className="flex items-center gap-4">
+                    <img src={cscLogo} alt="NACOSS CSC Logo" className="h-14 w-14 object-contain" loading="lazy" />
+                    <img src={unilorinLogo} alt="Unilorin Logo" className="h-14 w-14 object-contain" loading="lazy" />
+                </div>
 
-      </div>
-    </nav>
-  )
+                {/* Navigation Links */}
+                <ul
+                    className={`lg:flex ${
+                        isMenuOpen ? 'flex flex-col absolute top-20 left-0 w-full bg-white shadow-md lg:shadow-none lg:flex-row lg:static' : 'hidden'
+                    }`}
+                >
+                    <li>
+                        <a
+                            href="#hero"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                        >
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#about"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                        >
+                            About
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#executives"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                        >
+                            Executives
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#events"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                        >
+                            Events
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://drive.google.com/drive/folders/1QR9yBIMWBbQ0-lR60NhivgKJUYnjCAD1?usp=drive_link"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Study Resources
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://drive.google.com/drive/folders/11teLR7hqzVXJN_Zgn9Ic5tS8GQmwvjmY?usp=drive_link"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Repositories
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#contact"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                        >
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+
+                {/* Hamburger Menu Button */}
+                <div className="lg:hidden">
+                    <button
+                        onClick={toggleMenu}
+                        className="focus:outline-none"
+                        aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
+                        aria-expanded={isMenuOpen}
+                        aria-controls="navbar-menu"
+                    >
+                        <img src={hamburger} alt={isMenuOpen ? "Close Menu" : "Open Menu"} className="h-8 w-8" loading="lazy" />
+                    </button>
+                </div>
+            </div>
+        </nav>
+    );
 }
 
 export default Navbar;

@@ -20,9 +20,6 @@ execsSchema.statics.findByMatricNumber = function (matricNumber) {
 //static method to find by session
 execsSchema.statics.findBySession = async (session) => {
     try {
-        // const result = await mongoose.connection.db.collection('executives').find({session}).toArray();
-        // console.log('Raw query result:', result);
-        // return result;
         const execs = await Execs.find({session}).select("-_id -__v").lean().exec();
         return execs.sort(sortExecutives);
     } catch (error) {
