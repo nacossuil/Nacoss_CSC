@@ -6,7 +6,7 @@ import Events from './EventSchema.mjs';
 import cloudinary from 'cloudinary';
 import {CloudinaryStorage} from 'multer-storage-cloudinary';
 import multer from 'multer';
-import {newEventValidator, execsValidator, sessionvalidator} from "./validators.mjs";
+import {execsValidator, formValidator, newEventValidator, sessionvalidator} from "./validators.mjs";
 import {validationResult} from 'express-validator';
 import cors from 'cors';
 
@@ -14,11 +14,12 @@ dotenv.config();
 const app = express();
 const mongoDBUrI = process.env.mongoDBUrI;
 const portNumber = process.env.PORT;
+const nacossUnilorinEmailAddress = process.env.NACOSS_UNILORIN_EMAIL;
+const nacossUnilorinEmailPassword = process.env.NACOSS_UNILORIN_EMAIL_PASSWORD;
 
 
 //cors
-const allowedOrigins = [
-    'http://localhost:5173',  //
+const allowedOrigins = ['http://localhost:5173',  //
     'https://app-name.netlify.app'  //To be replaced with the actual Netlify domain when deployed.
 ];
 
@@ -31,9 +32,7 @@ const corsOptions = {
             return callback(new Error(msg), false);
         }
         return callback(null, true);
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    }, methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 // Configure Cloudinary
@@ -93,16 +92,10 @@ app.post('/api/events', upload.single('image'), newEventValidator, async (req, r
         const {title, description, startDateAndTime, endDateAndTime, price, venue} = req.body;
 
         const eventData = {
-            title,
-            description,
-            startDateAndTime,
-            endDateAndTime,
-            price,
-            venue
+            title, description, startDateAndTime, endDateAndTime, price, venue
         };
 
-        if (!req.file)
-            res.status(400).json("An image file has to be attached.");
+        if (!req.file) res.status(400).json("An image file has to be attached.");
         eventData.image = req.file.path; // This should be the Cloudinary URL
         const event = new Events(eventData);
         const newEvent = await event.save();
@@ -157,6 +150,22 @@ app.post('/api/execs', upload.single('image'), execsValidator, async (req, res) 
     }
 });
 
+app.post('api/submit-contact-form', formValidator, async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {email, subject, message} = req.body;
+    try {
+        sendEmail(email, subject, message);
+        return res.status(200).json();
+    } catch (err) {
+        return res.status(400).json({Error: "An error occurred."});
+    }
+})
+
 // Error handling middleware
 app.use((err, req, res) => {
     console.error(err);
@@ -166,3 +175,30 @@ app.use((err, req, res) => {
 app.listen(portNumber, () => {
     console.log(`Server running on port ${portNumber}`);
 });
+
+const nodemailer = require('nodemailer');
+
+function sendEmail(from, subject, text) {
+    // Create a transporter using SMTP
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.example.com', port: 587, secure: false, // Use TLS
+        auth: {
+            user: nacossUnilorinEmailAddress, pass: nacossUnilorinEmailPassword
+        }
+    });
+
+    // email options
+    let mailOptions = {
+        from, to: nacossUnilorinEmailAddress, subject, text
+    };
+
+    // Send email
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log('An error occurred when sending email.',);
+            throw error;
+        } else {
+            console.log("Email sent");
+        }
+    });
+}

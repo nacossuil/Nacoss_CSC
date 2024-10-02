@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import grid from "../assets/Grid.png";
 
 const Enquiry = () => {
     const [formData, setFormData] = useState({
-        name: "",
         email: "",
         subject: "",
         message: "",
@@ -13,95 +13,93 @@ const Enquiry = () => {
     const [formStatus, setFormStatus] = useState("");
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value,
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setFormStatus("");
 
-        // Simulate form submission delay
-        setTimeout(() => {
-            console.log("Form submitted:", formData);
-            setIsSubmitting(false);
-            setFormStatus("Message sent successfully!");
-            // Optionally, reset the form after submission
-            setFormData({
-                name: "",
-                email: "",
-                subject: "",
-                message: "",
+        try {
+            const response = await axios.post('https://nacoss-csc.onrender.com/api/submit-contact-form', {
+                email: formData.email,
+                subject: formData.subject,
+                message: formData.message
             });
-        }, 2000);
+
+            if (response.status === 200) {
+                setFormStatus("Message sent successfully!");
+                setFormData({
+                    email: "",
+                    subject: "",
+                    message: "",
+                });
+            }
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.errors) {
+                const errorMessages = error.response.data.errors.map(err => err.msg).join(". ");
+                setFormStatus(`Error: ${errorMessages}`);
+            } else {
+                setFormStatus("An error occurred while sending the message. Please try again.");
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
     };
+
+    const inputClassName = "mt-2 p-4 w-full border rounded-md focus:ring-2 focus:ring-blue-500 text-lg";
 
     return (
         <section
             id="enquiry"
-            className="relative container mx-auto flex flex-col justify-center items-center py-12 px-4 sm:px-8 md:px-16"
+            className="relative w-full flex flex-col justify-center items-center pt-4 px-4 sm:px-8 md:px-16"
             style={{
                 backgroundImage: `url(${grid})`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
             }}
         >
-            <div className="my-12 container mx-auto" id="events">
+            <div className="w-full max-w-6xl mx-auto" id="events">
                 <p className="text-center leading-[32px] font-bold text-[2.5rem] sm:text-[3rem] mb-8 hero-text">
                     Get in Touch with Us!
                 </p>
-                <div className="flex flex-col justify-center items-center px-4 sm:px-8 md:px-16 mb-28" id="contact">
+                <div className="flex flex-col justify-center items-center w-full mb-28" id="contact">
                     <h4 className="text-lg sm:text-xl text-gray-600 mb-4 text-center max-w-2xl">
-                        For enquiries, support, assistance, or collaboration, feel free to reach out to us. 📞📨
+                        For enquiries, support, assistance, or collaboration, feel free to reach out to us.📨
                     </h4>
-                    <h4 className="text-lg sm:text-xl text-gray-600 mb-8 text-center max-w-2xl"> We are here to help
-                        you!</h4>
-                    <form onSubmit={handleSubmit} className="max-w-md w-full mx-auto mt-8 space-y-4">
-                        <div>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                placeholder="Your Name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                aria-label="Your name"
-                                className="mt-1 p-3 w-full border rounded-md focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
+                    <h4 className="text-lg sm:text-xl text-gray-600 mb-8 text-center max-w-2xl">
+                        We are here to help you!
+                    </h4>
+                    <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
-                                placeholder="Email"
+                                placeholder="Your Email Address "
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
                                 aria-label="Email"
-                                className="mt-1 p-3 w-full border rounded-md focus:ring-2 focus:ring-blue-500"
+                                className={inputClassName}
                             />
-                        </div>
-
-                        <div>
                             <input
                                 type="text"
                                 id="subject"
                                 name="subject"
-                                placeholder="Subject"
+                                placeholder="Email Subject"
                                 value={formData.subject}
                                 onChange={handleChange}
                                 required
                                 aria-label="Subject"
-                                className="mt-1 p-3 w-full border rounded-md focus:ring-2 focus:ring-blue-500"
+                                className={inputClassName}
                             />
                         </div>
-
                         <div>
                             <textarea
                                 id="message"
@@ -111,19 +109,25 @@ const Enquiry = () => {
                                 onChange={handleChange}
                                 required
                                 aria-label="Message"
-                                className="mt-1 p-3 w-full border rounded-md focus:ring-2 focus:ring-blue-500"
+                                rows="6"
+                                className={inputClassName}
                             ></textarea>
                         </div>
-
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`bg-blue-700 hover:bg-[#29176B] text-white px-4 py-2 rounded-[30px] w-full mt-4 transition duration-300 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            {isSubmitting ? "Sending..." : "Send Message"}
-                        </button>
+                        <div className="flex justify-center">
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className={`bg-blue-700 hover:bg-[#29176B] text-white px-8 py-4 rounded-[30px] w-full md:w-auto md:min-w-[200px] transition duration-300 text-lg font-semibold ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isSubmitting ? "Sending..." : "Send Message"}
+                            </button>
+                        </div>
                     </form>
-                    {formStatus && <p className="mt-4 text-green-500">{formStatus}</p>}
+                    {formStatus && (
+                        <p className={`mt-6 text-lg ${formStatus.startsWith('Error') ? 'text-red-500' : 'text-green-500'}`}>
+                            {formStatus}
+                        </p>
+                    )}
                 </div>
             </div>
         </section>

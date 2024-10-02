@@ -1,9 +1,9 @@
+// ExecutiveCard Component
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import elinked from "../assets/elinkedin.png";
-import etwitter from "../assets/etwitter.png";
-import egmail from "../assets/egmail.png";
 import grid from "../assets/Grid.png";
+import emailpng from "/src/assets/egmail.png"
+import linkedInpng from "/src/assets/elinkedin.png"
 
 // Types
 interface Executive {
@@ -24,40 +24,34 @@ interface ApiResponse {
 // Base URL
 const BASE_API_URL = "https://nacoss-csc.onrender.com/api/execs";
 
-// ExecutiveCard Component
-const ExecutiveCard: React.FC<{ executive: Executive }> = ({executive}) => {
+const ExecutiveCard = ({executive}) => {
     return (
         <div
-            className="w-full sm:w-[270px] flex flex-col justify-center items-center my-8 bg-white m-2.5 p-4 shadow-md rounded-md hover:shadow-xl transition-shadow duration-300"
-        >
-            <img
-                src={executive.imageUrl}
-                alt={`${executive.name} - ${executive.position}`}
-                className="rounded-full h-32 w-32 object-cover"
-                onError={(e) => {
-                    e.currentTarget.src = 'https://via.placeholder.com/200x200?text=No+Image';
-                }}
-                loading="lazy"
-            />
-            <p className="mt-4 text-xl font-bold text-black text-center">{executive.name}</p>
-            <p className="text-lg text-black text-center">{executive.position}</p>
-            <p className="text-sm text-gray-600 mb-4 text-center">{executive.studentId}</p>
-            <div className="flex justify-center space-x-4 my-2">
+            className="w-full sm:w-[270px] flex flex-col justify-start items-center my-8 bg-white m-2.5 p-4 shadow-md rounded-md hover:shadow-xl transition-shadow duration-300">
+            <div className="w-36 h-36 rounded-full overflow-hidden mb-4">
+                <img
+                    src={executive.imageUrl}
+                    alt={`${executive.name} - ${executive.position}`}
+                    className="w-full h-full object-cover object-top"
+                    onError={(e) => {
+                        e.currentTarget.src = 'https://via.placeholder.com/200x200?text=No+Image';
+                    }}
+                    loading="lazy"
+                />
+            </div>
+            <div className="flex flex-col items-center justify-center flex-grow">
+                <p className="mt-2 text-xl font-bold text-black text-center">{executive.name}</p>
+                <p className="text-lg text-black text-center">{executive.position}</p>
+                <p className="text-sm text-gray-600 mb-4 text-center">{executive.studentId}</p>
+            </div>
+            <div className="flex justify-center space-x-4 mt-auto">
                 <a href={`mailto:${executive.email}`} aria-label={`Email ${executive.name}`}>
-                    <img src={egmail} className="h-5 w-5" alt="Email Icon"/>
+                    <img src={emailpng} className="h-5 w-5" alt="Email Icon"/>
                 </a>
-                {executive.twitterUrl && (
-                    <a href={executive.twitterUrl} target="_blank" rel="noopener noreferrer"
-                       aria-label={`Twitter Profile of ${executive.name}`}>
-                        <img src={etwitter} className="h-5 w-5" alt="Twitter Icon"/>
-                    </a>
-                )}
-                {executive.linkedinUrl && (
-                    <a href={executive.linkedinUrl} target="_blank" rel="noopener noreferrer"
-                       aria-label={`LinkedIn Profile of ${executive.name}`}>
-                        <img src={elinked} className="h-5 w-5" alt="LinkedIn Icon"/>
-                    </a>
-                )}
+                <a href={executive.linkedinUrl} target="_blank" rel="noopener noreferrer"
+                   aria-label={`LinkedIn Profile of ${executive.linkedinUrl}`}>
+                    <img src={linkedInpng} className="h-5 w-5" alt="LinkedIn Icon"/>
+                </a>
             </div>
         </div>
     );
@@ -154,7 +148,7 @@ const Executives: React.FC = () => {
     return (
         <section
             id="executives"
-            className="relative container mx-auto flex flex-col justify-center items-center py-10 px-4 sm:px-8 md:px-16"
+            className="relative container mx-auto flex flex-col justify-center items-center  sm:px-8 md:px-16"
             style={{backgroundImage: `url(${grid})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
         >
             <div className="flex flex-col items-center w-full max-w-6xl mx-auto px-4 my-12">

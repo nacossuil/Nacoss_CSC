@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import chip from "../assets/chip.png";
 import virtual from "../assets/virtual.png";
 import ar from "../assets/ar.png";
@@ -71,7 +71,7 @@ const Events: React.FC = () => {
     return (
         <section
             id="hero"
-            className="relative container mx-auto flex flex-col justify-center items-center py-4 px-4 sm:px-8 md:px-16"
+            className="relative container mx-auto flex flex-col justify-center items-center pt-4 px-4 sm:px-8 md:px-16"
             style={{backgroundImage: `url(${grid})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
         >
             <div className="my-12 container mx-auto" id="events">
@@ -97,8 +97,13 @@ const Events: React.FC = () => {
                             const startDateTime = splitDateTime(info.startDateAndTime);
                             const endDateTime = splitDateTime(info.endDateAndTime);
 
+                            const handleCatchUpClick = () => {
+                                window.open(info.onclick, '_blank');
+                            };
+
                             return (
-                                <div className="flex flex-col w-full sm:w-[300px] mx-6 shadow-lg bg-white rounded-md hover:shadow-xl transition-shadow">
+                                <div key={info.title}
+                                     className="flex flex-col w-full sm:w-[300px] mx-6 shadow-lg bg-white rounded-md hover:shadow-xl transition-shadow">
                                     <img src={getImageSource(info.image)} alt={info.title}
                                          className="w-full h-[250px] object-cover rounded-t-md"
                                          style={{objectFit: 'cover'}}/>
@@ -108,29 +113,32 @@ const Events: React.FC = () => {
                                     </div>
                                     <div className="flex flex-col justify-between px-6 py-4">
                                         <div className="mb-4">
+                                        <span className="flex items-center mb-2">
+                                            <img src={cal} className="w-[14px] h-[14px]"/>
+                                            <p className="text-[12px] sub-text ml-2">
+                                                {startDateTime.date} - {endDateTime.date}
+                                            </p>
+                                        </span>
                                             <span className="flex items-center mb-2">
-                                                <img src={cal} className="w-[14px] h-[14px]"/>
-                                                <p className="text-[12px] sub-text ml-2">
-                                                    {startDateTime.date} - {endDateTime.date}
-                                                </p>
-                                            </span>
+                                            <img src={time} className="w-[14px] h-[14px]"/>
+                                            <p className="text-[12px] sub-text ml-2">
+                                                {startDateTime.time} - {endDateTime.time}
+                                            </p>
+                                        </span>
                                             <span className="flex items-center mb-2">
-                                                <img src={time} className="w-[14px] h-[14px]"/>
-                                                <p className="text-[12px] sub-text ml-2">
-                                                    {startDateTime.time} - {endDateTime.time}
-                                                </p>
-                                            </span>
-                                            <span className="flex items-center mb-2">
-                                                <img src={location} className="w-[14px] h-[14px]"/>
-                                                <p className="text-[12px] sub-text ml-2">{info.venue}</p>
-                                            </span>
+                                            <img src={location} className="w-[14px] h-[14px]"/>
+                                            <p className="text-[12px] sub-text ml-2">{info.venue}</p>
+                                        </span>
                                             <span className="flex items-center">
-                                                <img src={cost} className="w-[14px] h-[14px]"/>
-                                                <p className="text-[12px] sub-text ml-2">{"Free. "}</p>
-                                            </span>
+                                            <img src={cost} className="w-[14px] h-[14px]"/>
+                                            <p className="text-[12px] sub-text ml-2">{"Free. "}</p>
+                                        </span>
                                         </div>
                                         <div className="flex justify-end">
-                                            <button className="bg-[#032B44] hover:bg-[#29176B] text-[#fff] text-[12px] py-2 px-4 rounded-[30px]">
+                                            <button
+                                                className="bg-[#032B44] hover:bg-[#29176B] text-[#fff] text-[12px] py-2 px-4 rounded-[30px]"
+                                                onClick={handleCatchUpClick}
+                                            >
                                                 Catch Up!
                                             </button>
                                         </div>
@@ -143,26 +151,25 @@ const Events: React.FC = () => {
             </div>
         </section>
     );
-};
 
-function splitDateTime(dateTimeStr) {
-    const [date, time] = dateTimeStr.replace('-', ' ').split(' ');
+    function splitDateTime(dateTimeStr) {
+        const [date, time] = dateTimeStr.replace('-', ' ').split(' ');
 
-    const timeParts = time.split(':');
-    let hours = parseInt(timeParts[0]);
-    const minutes = timeParts[1].slice(0, 2);
-    const ampm = time.slice(-2).toLowerCase();
+        const timeParts = time.split(':');
+        let hours = parseInt(timeParts[0]);
+        const minutes = timeParts[1].slice(0, 2);
+        const ampm = time.slice(-2).toLowerCase();
 
-    if (ampm === 'pm' && hours !== 12) {
-        hours += 12;
-    } else if (ampm === 'am' && hours === 12) {
-        hours = 0;
+        if (ampm === 'pm' && hours !== 12) {
+            hours += 12;
+        } else if (ampm === 'am' && hours === 12) {
+            hours = 0;
+        }
+
+        return {
+            date,
+            time: `${hours}:${minutes}`,
+        };
     }
-
-    return {
-        date,
-        time: `${hours}:${minutes}`,
-    };
 }
-
-export default Events;
+export default Events

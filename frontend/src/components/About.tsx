@@ -1,4 +1,3 @@
-import React from 'react';
 import about from "../assets/about.png";
 import star from "../assets/star3.png";
 import infinity from "../assets/Infinity.png";
@@ -61,7 +60,7 @@ const About = () => {
 
                         {/* Call-to-Action Button */}
                         <a
-                            href="#signup"
+                            href="https://x.com/NACOSS_UIL" // Replace with your Twitter URL
                             className="inline-block bg-blue-700 hover:bg-blue-800 text-white text-base font-semibold py-2 px-6 rounded-full transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             aria-label="Join NACOSS"
                         >
