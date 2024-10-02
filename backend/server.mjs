@@ -19,8 +19,8 @@ const nacossUnilorinEmailPassword = process.env.NACOSS_UNILORIN_EMAIL_PASSWORD;
 
 
 //cors
-const allowedOrigins = ['http://localhost:5173',  //
-    'https://app-name.netlify.app'  //To be replaced with the actual Netlify domain when deployed.
+const allowedOrigins = [  //
+    'https://nacoss-csc.vercel.app'  //To be replaced with the actual Netlify domain when deployed.
 ];
 
 const corsOptions = {
