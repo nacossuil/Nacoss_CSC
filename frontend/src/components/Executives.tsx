@@ -1,9 +1,8 @@
-// ExecutiveCard Component
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import grid from "../assets/Grid.png";
-import emailpng from "/src/assets/egmail.png"
-import linkedInpng from "/src/assets/elinkedin.png"
+import emailpng from "/src/assets/egmail.png";
+import linkedInpng from "/src/assets/elinkedin.png";
 
 // Types
 interface Executive {
@@ -24,16 +23,20 @@ interface ApiResponse {
 // Base URL
 const BASE_API_URL = "https://nacoss-csc.onrender.com/api/execs";
 
-const ExecutiveCard = ({executive}) => {
+// ExecutiveCard Component
+interface ExecutiveCardProps {
+    executive: Executive;
+}
+
+const ExecutiveCard: React.FC<ExecutiveCardProps> = ({ executive }) => {
     return (
-        <div
-            className="w-full sm:w-[270px] flex flex-col justify-start items-center my-8 bg-white m-2.5 p-4 shadow-md rounded-md hover:shadow-xl transition-shadow duration-300">
+        <div className="w-full sm:w-[270px] flex flex-col justify-start items-center my-8 bg-white m-2.5 p-4 shadow-md rounded-md hover:shadow-xl transition-shadow duration-300">
             <div className="w-36 h-36 rounded-full overflow-hidden mb-4">
                 <img
                     src={executive.imageUrl}
                     alt={`${executive.name} - ${executive.position}`}
                     className="w-full h-full object-cover object-top"
-                    onError={(e) => {
+                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                         e.currentTarget.src = 'https://via.placeholder.com/200x200?text=No+Image';
                     }}
                     loading="lazy"
@@ -46,12 +49,13 @@ const ExecutiveCard = ({executive}) => {
             </div>
             <div className="flex justify-center space-x-4 mt-auto">
                 <a href={`mailto:${executive.email}`} aria-label={`Email ${executive.name}`}>
-                    <img src={emailpng} className="h-5 w-5" alt="Email Icon"/>
+                    <img src={emailpng} className="h-5 w-5" alt="Email Icon" />
                 </a>
-                <a href={executive.linkedinUrl} target="_blank" rel="noopener noreferrer"
-                   aria-label={`LinkedIn Profile of ${executive.linkedinUrl}`}>
-                    <img src={linkedInpng} className="h-5 w-5" alt="LinkedIn Icon"/>
-                </a>
+                {executive.linkedinUrl && (
+                    <a href={executive.linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label={`LinkedIn Profile of ${executive.name}`}>
+                        <img src={linkedInpng} className="h-5 w-5" alt="LinkedIn Icon" />
+                    </a>
+                )}
             </div>
         </div>
     );
@@ -63,7 +67,12 @@ const LoadingSpinner: React.FC = () => (
 );
 
 // ErrorMessage Component
-const ErrorMessage: React.FC<{ message: string; retry: () => void }> = ({message, retry}) => (
+interface ErrorMessageProps {
+    message: string;
+    retry: () => void;
+}
+
+const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, retry }) => (
     <div className="text-red-500 p-5 text-center">
         <p>Error: {message}</p>
         <button
@@ -140,16 +149,15 @@ const Executives: React.FC = () => {
         }
     };
 
-    if (loading) return <LoadingSpinner/>;
-    if (error) return <ErrorMessage message={error} retry={() => fetchExecutives()}/>;
-    if (executives.length === 0) return <div className="text-black p-5 text-center">No executives data available for the
-        selected session.</div>;
+    if (loading) return <LoadingSpinner />;
+    if (error) return <ErrorMessage message={error} retry={() => fetchExecutives()} />;
+    if (executives.length === 0) return <div className="text-black p-5 text-center">No executives data available for the selected session.</div>;
 
     return (
         <section
             id="executives"
-            className="relative container mx-auto flex flex-col justify-center items-center  sm:px-8 md:px-16"
-            style={{backgroundImage: `url(${grid})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
+            className="relative container mx-auto flex flex-col justify-center items-center sm:px-8 md:px-16"
+            style={{ backgroundImage: `url(${grid})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
         >
             <div className="flex flex-col items-center w-full max-w-6xl mx-auto px-4 my-12">
                 <h1 className="text-4xl font-bold mb-4 mt-8 text-center">Meet Your Executives</h1>
@@ -161,20 +169,13 @@ const Executives: React.FC = () => {
                 <div className="flex w-full max-w-[22rem] bg-gray-200 rounded-lg mb-8">
                     <button
                         className={`w-full py-2 px-4 rounded-l-lg focus:outline-none bg-gray-300 cursor-not-allowed`}
-
-                        onClick={() => {
-                        }}
+                        onClick={() => {}}
                         disabled={activeTab === 'current'}
                         aria-label="View Current Executives"
                     >
                         Current Executives
                     </button>
                     <button
-                        // className={`w-full py-2 px-4 rounded-r-lg focus:outline-none ${
-                        //     activeTab === 'past'
-                        //         ? 'bg-gray-300 cursor-not-allowed'
-                        //         : 'hover:bg-blue-700 hover:text-white'
-                        // }`}
                         className={`p-4 w-full rounded-[10px] bg-[#1D4E8D] shadow-md text-white`}
                         onClick={() => handleTabClick('past')}
                         disabled={activeTab === 'past'}
@@ -192,7 +193,7 @@ const Executives: React.FC = () => {
                 {/* Executives Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {executives.map((executive) => (
-                        <ExecutiveCard key={executive.email} executive={executive}/>
+                        <ExecutiveCard key={executive.email} executive={executive} />
                     ))}
                 </div>
             </div>

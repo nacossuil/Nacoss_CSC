@@ -1,7 +1,6 @@
 import insta from "../assets/f_insta.png";
 import twitter from "../assets/f_twitter.png";
 import arrow from "../assets/arrowWithoutBg.gif";
-import React from "react";
 
 const Footer = () => {
     return (

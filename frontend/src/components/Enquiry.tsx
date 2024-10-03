@@ -1,36 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import grid from "../assets/Grid.png";
 
-const Enquiry = () => {
-    const [formData, setFormData] = useState({
+interface FormData {
+    email: string;
+    subject: string;
+    message: string;
+}
+
+const Enquiry: React.FC = () => {
+    const [formData, setFormData] = useState<FormData>({
         email: "",
         subject: "",
         message: "",
     });
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formStatus, setFormStatus] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [formStatus, setFormStatus] = useState<string>("");
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
+        setFormData((prevData) => ({
+            ...prevData,
             [name]: value,
-        });
+        }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
         setFormStatus("");
 
         try {
-            const response = await axios.post('https://nacoss-csc.onrender.com/api/submit-contact-form', {
-                email: formData.email,
-                subject: formData.subject,
-                message: formData.message
-            });
+            const response = await axios.post('https://nacoss-csc.onrender.com/api/submit-contact-form', formData);
 
             if (response.status === 200) {
                 setFormStatus("Message sent successfully!");
@@ -41,8 +43,8 @@ const Enquiry = () => {
                 });
             }
         } catch (error) {
-            if (error.response && error.response.data && error.response.data.errors) {
-                const errorMessages = error.response.data.errors.map(err => err.msg).join(". ");
+            if (axios.isAxiosError(error) && error.response?.data?.errors) {
+                const errorMessages = error.response.data.errors.map((err: { msg: string }) => err.msg).join(". ");
                 setFormStatus(`Error: ${errorMessages}`);
             } else {
                 setFormStatus("An error occurred while sending the message. Please try again.");
@@ -109,7 +111,7 @@ const Enquiry = () => {
                                 onChange={handleChange}
                                 required
                                 aria-label="Message"
-                                rows="6"
+                                rows={6}
                                 className={inputClassName}
                             ></textarea>
                         </div>
