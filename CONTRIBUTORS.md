@@ -4,11 +4,12 @@ We thank the following people who have contributed to this project:
 
 ## Core Team
 
-| Name                   | GitHub                                                         | Role                                     |
-|------------------------|----------------------------------------------------------------|------------------------------------------|
-| Ibitomihi Eniola Banji | [@Banji0x](https://github.com/Banji0x)                         | [Project Coordinator/Backend developer.] |
-| Muhammad Mukhtar       | [@Amir9eng](https://github.com/Amir9eng)                       | [Frontend Developer 1]                   |
+| Name                   | GitHub/Dribble                                                | Role                                     |
+|------------------------|---------------------------------------------------------------|------------------------------------------|
+| Ibitomihi Eniola Banji | [@Banji0x](https://github.com/Banji0x)                        | [Project Coordinator/Backend developer.] |
+| Muhammad Mukhtar       | [@Amir9eng](https://github.com/Amir9eng)                      | [Frontend Developer 1]                   |
 | Abdussalam Mustapha    | [@abdussalam-mustapha](https://github.com/abdussalam-mustapha) | [Frontend Developer 2]                   |
+| Olasupo Ibraheem       | [@chumskii](https://dribbble.com/chumskii)                    | [Product Designer]                       |
 
 ## Contributors
 
