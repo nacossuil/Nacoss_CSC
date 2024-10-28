@@ -9,6 +9,7 @@ import multer from 'multer';
 import {execsValidator, formValidator, newEventValidator, sessionvalidator} from "./validators.mjs";
 import {validationResult} from 'express-validator';
 import cors from 'cors';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 const app = express();
@@ -176,7 +177,6 @@ app.listen(portNumber, () => {
     console.log(`Server running on port ${portNumber}`);
 });
 
-const nodemailer = require('nodemailer');
 
 function sendEmail(from, subject, text) {
     // Create a transporter using SMTP
