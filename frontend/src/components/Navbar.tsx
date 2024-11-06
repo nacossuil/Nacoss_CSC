@@ -107,7 +107,7 @@ const Navbar = () => {
                             className={navLinkClasses}
                             onClick={closeMenu}
                         >
-                            Contact
+                            Contact us
                         </a>
                     </li>
                 </ul>
