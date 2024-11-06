@@ -81,13 +81,24 @@ const Navbar = () => {
                     </li>
                     <li>
                         <a
+                            href="https://drive.google.com/drive/folders/1eVBHZt7HCtxzvqrG9lyb7u3ZfMGZVSok?usp=sharing"
+                            className={navLinkClasses}
+                            onClick={closeMenu}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            TechAccelerator Certificates
+                        </a>
+                    </li>
+                    <li>
+                        <a
                             href="https://drive.google.com/drive/folders/11teLR7hqzVXJN_Zgn9Ic5tS8GQmwvjmY?usp=drive_link"
                             className={navLinkClasses}
                             onClick={closeMenu}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            Repositories
+                            Repository
                         </a>
                     </li>
                     <li>
